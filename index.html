@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magic Gravity — RPG Medieval</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Uncial+Antiqua&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #09060b;
+    color: #ead9b0;
+    font-family: 'Cinzel', serif;
+    overflow-x: hidden;
+}
+
+/* FUNDO */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 50% 20%, rgba(87, 31, 130, .22), transparent 35%),
+        radial-gradient(circle at 20% 70%, rgba(20, 80, 110, .12), transparent 30%),
+        linear-gradient(#08050a, #120b12);
+    z-index: -3;
+}
+
+/* PARTÍCULAS */
+.particles,
+.particles::before,
+.particles::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.particles {
+    background-image:
+        radial-gradient(#d8b86a 1px, transparent 1px),
+        radial-gradient(#8b65ff 1px, transparent 1px);
+    background-size: 110px 110px, 170px 170px;
+    animation: stars 25s linear infinite;
+    opacity: .28;
+}
+
+@keyframes stars {
+    from { transform: translateY(0); }
+    to { transform: translateY(110px); }
+}
+
+/* NAV */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 50;
+    padding: 18px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(8, 5, 10, .78);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(218, 177, 91, .25);
+}
+
+.logo {
+    color: #dcb86a;
+    font-family: 'Uncial Antiqua', serif;
+    font-size: 25px;
+    text-shadow: 0 0 15px #8c5cff;
+}
+
+nav ul {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+}
+
+nav a {
+    color: #d9c79e;
+    text-decoration: none;
+    font-size: 13px;
+    transition: .3s;
+}
+
+nav a:hover {
+    color: #d9a94e;
+    text-shadow: 0 0 10px #b06cff;
+}
+
+/* HERO */
+.hero {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 20px 60px;
+    background:
+        linear-gradient(to bottom, rgba(5,3,7,.15), #09060b 94%),
+        radial-gradient(ellipse at 50% 85%, rgba(90,50,110,.4), transparent 55%);
+}
+
+/* LUA */
+.moon {
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    background: #f3e7c1;
+    box-shadow: 0 0 50px #bba8e8, 0 0 120px rgba(137,94,255,.45);
+    right: 12%;
+    top: 17%;
+    opacity: .85;
+}
+
+.moon::after {
+    content: "";
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    background: #09060b;
+    left: 55px;
+    top: -15px;
+}
+
+/* MONTANHA */
+.mountains {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 330px;
+    background: #0b0810;
+    clip-path: polygon(
+        0 100%, 0 65%, 10% 48%, 17% 72%, 27% 35%,
+        35% 63%, 46% 28%, 56% 65%, 67% 38%,
+        77% 62%, 87% 30%, 100% 60%, 100% 100%
+    );
+    z-index: 1;
+}
+
+/* CASTELO */
+.castle {
+    position: absolute;
+    bottom: 110px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 520px;
+    height: 270px;
+    background: linear-gradient(90deg, #17131b, #30252d, #151017);
+    border: 3px solid #3f3540;
+    z-index: 3;
+    box-shadow: 0 0 50px rgba(0,0,0,.9);
+}
+
+.tower {
+    position: absolute;
+    bottom: 0;
+    width: 105px;
+    height: 340px;
+    background: linear-gradient(90deg,#151117,#3c3039,#171119);
+    border: 3px solid #4a3d47;
+}
+
+.tower.left { left: -65px; }
+.tower.right { right: -65px; }
+
+.tower::before {
+    content: "";
+    position: absolute;
+    top: -70px;
+    left: -10px;
+    border-left: 60px solid transparent;
+    border-right: 60px solid transparent;
+    border-bottom: 75px solid #211821;
+}
+
+.tower::after {
+    content: "✦";
+    position: absolute;
+    top: 35px;
+    left: 40px;
+    color: #a98cff;
+    text-shadow: 0 0 15px #8c55ff;
+    font-size: 22px;
+}
+
+.castle-main {
+    position: absolute;
+    left: 100px;
+    right: 100px;
+    bottom: 0;
+    height: 230px;
+}
+
+.castle-main::before {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 100px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 70px 70px 0 0;
+    background: #09070b;
+    border: 7px solid #4b3b46;
+}
+
+.window {
+    position: absolute;
+    width: 24px;
+    height: 40px;
+    background: #d49d43;
+    box-shadow: 0 0 18px #e7ae47;
+    border-radius: 50% 50% 5px 5px;
+}
+
+.w1 { left: 45px; top: 70px; }
+.w2 { right: 45px; top: 70px; }
+.w3 { left: 50%; top: 30px; transform: translateX(-50%); }
+
+/* DRAGÃO */
+.dragon {
+    position: absolute;
+    z-index: 5;
+    right: 8%;
+    top: 27%;
+    font-size: 105px;
+    filter: drop-shadow(0 0 15px #7529c9);
+    animation: dragonFly 5s ease-in-out infinite;
+}
+
+@keyframes dragonFly {
+    0%,100% { transform: translate(0,0) rotate(-5deg); }
+    50% { transform: translate(-40px,-25px) rotate(4deg); }
+}
+
+/* CONTEÚDO */
+.hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 900px;
+}
+
+.crest {
+    font-size: 55px;
+    color: #d7ad52;
+    text-shadow: 0 0 25px #7041c2;
+}
+
+.hero h1 {
+    font-family: 'Uncial Antiqua', serif;
+    font-size: clamp(55px, 9vw, 115px);
+    color: #e2bd6a;
+    letter-spacing: 5px;
+    text-shadow:
+        0 4px 0 #392612,
+        0 0 25px #7d3dcc,
+        0 0 60px rgba(119,54,255,.5);
+}
+
+.hero h2 {
+    color: #c5b4df;
+    letter-spacing: 8px;
+    font-size: 17px;
+    margin: 10px 0 25px;
+}
+
+.hero p {
+    max-width: 680px;
+    margin: auto;
+    line-height: 1.8;
+    color: #aa9a82;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 35px;
+    padding: 16px 34px;
+    color: #160e08;
+    background: linear-gradient(135deg,#e5c477,#a87527);
+    text-decoration: none;
+    font-weight: 800;
+    border: 2px solid #f1d78d;
+    box-shadow: 0 0 30px rgba(205,148,51,.3);
+    transition: .3s;
+}
+
+.btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 40px rgba(177,101,255,.7);
+}
+
+/* SEÇÕES */
+section {
+    padding: 100px 8%;
+    position: relative;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 55px;
+}
+
+.section-title span {
+    color: #a46bf0;
+    letter-spacing: 5px;
+    font-size: 12px;
+}
+
+.section-title h2 {
+    font-family: 'Uncial Antiqua', serif;
+    font-size: 42px;
+    color: #d8b66d;
+    margin-top: 8px;
+}
+
+/* HISTÓRIA */
+.story {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.story-card {
+    padding: 40px;
+    background: linear-gradient(135deg,rgba(42,28,37,.8),rgba(14,10,17,.9));
+    border: 1px solid #554052;
+    box-shadow: inset 0 0 40px rgba(0,0,0,.3);
+}
+
+.story-card h3 {
+    color: #d5af5e;
+    font-size: 25px;
+    margin-bottom: 20px;
+}
+
+.story-card p {
+    color: #a99b87;
+    line-height: 1.9;
+}
+
+/* PERSONAGENS */
+.characters {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 30px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.character {
+    min-height: 330px;
+    position: relative;
+    overflow: hidden;
+    padding: 35px;
+    border: 1px solid #554052;
+    background:
+        radial-gradient(circle at center,rgba(105,54,151,.25),transparent 50%),
+        #151016;
+    text-align: center;
+    transition: .4s;
+}
+
+.character:hover {
+    transform: translateY(-8px);
+    border-color: #a878db;
+    box-shadow: 0 15px 50px rgba(102,42,151,.3);
+}
+
+.character-icon {
+    font-size: 90px;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 15px rgba(188,126,255,.35));
+}
+
+.character h3 {
+    color: #dfbd70;
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+.character p {
+    color: #998b7a;
+    line-height: 1.6;
+}
+
+/* MAGIAS */
+.magic {
+    background:
+        linear-gradient(rgba(11,7,13,.86),rgba(11,7,13,.95)),
+        repeating-linear-gradient(
+            0deg,
+            transparent 0,
+            transparent 38px,
+            rgba(201,159,82,.04) 39px
+        );
+}
+
+.spells {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 25px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.spell {
+    padding: 30px;
+    text-align: center;
+    background: rgba(31,20,37,.7);
+    border: 1px solid #44334e;
+}
+
+.spell .symbol {
+    font-size: 45px;
+    color: #a66aff;
+    text-shadow: 0 0 20px #8639d7;
+}
+
+.spell h3 {
+    color: #d8b56c;
+    margin: 15px 0;
+}
+
+.spell p {
+    color: #938675;
+    line-height: 1.6;
+}
+
+/* CTA */
+.cta {
+    text-align: center;
+    background:
+        radial-gradient(circle at center,rgba(101,49,145,.3),transparent 55%);
+}
+
+.cta h2 {
+    font-family: 'Uncial Antiqua', serif;
+    font-size: clamp(35px,5vw,65px);
+    color: #e0bc6b;
+}
+
+.cta p {
+    color: #9f927e;
+    margin-top: 20px;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 40px 20px;
+    border-top: 1px solid #2e2530;
+    color: #685d55;
+    font-size: 12px;
+}
+
+.runes {
+    color: #8253bb;
+    letter-spacing: 12px;
+    margin-bottom: 15px;
+}
+
+/* RESPONSIVO */
+@media(max-width:800px) {
+    nav ul {
+        display: none;
+    }
+
+    .castle {
+        transform: translateX(-50%) scale(.65);
+        bottom: 90px;
+    }
+
+    .dragon {
+        font-size: 65px;
+        right: 5%;
+        top: 25%;
+    }
+
+    .moon {
+        width: 130px;
+        height: 130px;
+    }
+
+    .moon::after {
+        width: 130px;
+        height: 130px;
+    }
+
+    .story,
+    .characters,
+    .spells {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: 55px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="particles"></div>
+
+<nav>
+    <div class="logo">⚔ MAGIC GRAVITY</div>
+
+    <ul>
+        <li><a href="#historia">História</a></li>
+        <li><a href="#reino">Reino</a></li>
+        <li><a href="#magias">Magias</a></li>
+        <li><a href="#jogar">Jogar</a></li>
+    </ul>
+</nav>
+
+<header class="hero">
+
+    <div class="moon"></div>
+
+    <div class="dragon">🐉</div>
+
+    <div class="castle">
+        <div class="tower left"></div>
+        <div class="tower right"></div>
+
+        <div class="castle-main">
+            <div class="window w1"></div>
+            <div class="window w2"></div>
+            <div class="window w3"></div>
+        </div>
+    </div>
+
+    <div class="mountains"></div>
+
+    <div class="hero-content">
+        <div class="crest">♔ ✦ ♕</div>
+
+        <h1>MAGIC GRAVITY</h1>
+
+        <h2>AS CRÔNICAS DO REINO ETERNO</h2>
+
+        <p>
+            Quando a magia desperta e os antigos dragões retornam aos céus,
+            guerreiros, magos e reis são chamados para decidir o destino
+            de um reino dividido entre luz, trevas e poder.
+        </p>
+
+        <a href="#jogar" class="btn">⚔ ENTRAR NO REINO ⚔</a>
+    </div>
+</header>
+
+<section id="historia">
+
+    <div class="section-title">
+        <span>UMA LENDA ESQUECIDA</span>
+        <h2>O Reino de Aetheria</h2>
+    </div>
+
+    <div class="story">
+
+        <div class="story-card">
+            <h3>👑 O Rei Edrion</h3>
+
+            <p>
+                Senhor das terras do norte e guardião do Trono de Cristal.
+                O velho rei carrega uma coroa forjada durante a primeira
+                era da magia. Seu maior segredo pode mudar o destino de
+                todo o continente.
+            </p>
+        </div>
+
+        <div class="story-card">
+            <h3>👸 A Rainha Lyra</h3>
+
+            <p>
+                Conhecida como a Rainha das Estrelas, Lyra domina uma
+                antiga magia celestial. Dizem que seus olhos conseguem
+                enxergar acontecimentos que ainda não aconteceram.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<section id="reino">
+
+    <div class="section-title">
+        <span>HERÓIS E SOBERANOS</span>
+        <h2>Personagens do Reino</h2>
+    </div>
+
+    <div class="characters">
+
+        <div class="character">
+            <div class="character-icon">👑</div>
+            <h3>Rei Edrion</h3>
+            <p>
+                O soberano de Aetheria. Guerreiro lendário e protetor
+                do Trono de Cristal.
+            </p>
+        </div>
+
+        <div class="character">
+            <div class="character-icon">👸</div>
+            <h3>Rainha Lyra</h3>
+            <p>
+                A feiticeira real capaz de canalizar a energia das estrelas.
+            </p>
+        </div>
+
+        <div class="character">
+            <div class="character-icon">🧙</div>
+            <h3>Arcanista</h3>
+            <p>
+                Mestres da magia proibida que estudam os segredos da
+                gravidade e do espaço.
+            </p>
+        </div>
+
+        <div class="character">
+            <div class="character-icon">🛡️</div>
+            <h3>Cavaleiro Real</h3>
+            <p>
+                Guerreiros juramentados que defendem os castelos
+                contra monstros e exércitos invasores.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<section id="magias" class="magic">
+
+    <div class="section-title">
+        <span>O PODER DOS ARCANOS</span>
+        <h2>As Grandes Magias</h2>
+    </div>
+
+    <div class="spells">
+
+        <div class="spell">
+            <div class="symbol">✦</div>
+            <h3>Gravitas</h3>
+            <p>
+                Manipule a gravidade para lançar inimigos aos céus
+                ou esmagá-los contra o chão.
+            </p>
+        </div>
+
+        <div class="spell">
+            <div class="symbol">☽</div>
+            <h3>Lua Sombria</h3>
+            <p>
+                Invoca a energia da lua para cobrir o campo de batalha
+                com sombras mágicas.
+            </p>
+        </div>
+
+        <div class="spell">
+            <div class="symbol">🔥</div>
+            <h3>Fúria Dracônica</h3>
+            <p>
+                Canalize o poder dos antigos dragões e transforme
+                sua magia em fogo ancestral.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<section class="cta" id="jogar">
+
+    <div class="section-title">
+        <span>A LENDA COMEÇA AGORA</span>
+        <h2>Seu destino espera.</h2>
+    </div>
+
+    <p>
+        Escolha seu reino. Domine sua magia. Erga sua espada.
+        Enfrente os dragões e escreva sua própria história.
+    </p>
+
+    <a href="#" class="btn" onclick="startGame(event)">
+        ⚔ COMEÇAR A AVENTURA ⚔
+    </a>
+
+</section>
+
+<footer>
+    <div class="runes">ᚠ ᚱ ᚨ ᚷ ᚾ ᛟ ᛏ ᚹ</div>
+    MAGIC GRAVITY © 2026 — Um RPG de fantasia medieval
+</footer>
+
+<script>
+function startGame(event) {
+    event.preventDefault();
+
+    alert(
+        "⚔ Bem-vindo a Aetheria! ⚔\\n\\n" +
+        "Sua aventura está prestes a começar...\\n\\n" +
+        "O reino espera pelo seu herói."
+    );
+}
+
+/* Pequeno efeito mágico ao passar o mouse */
+document.querySelectorAll('.spell, .character, .story-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        card.style.background =
+            `radial-gradient(circle at ${x}px ${y}px,
+             rgba(130,70,190,.22),
+             rgba(31,20,37,.85) 45%)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+        card.style.background = '';
+    });
+});
+</script>
+
+</body>
+</html>
